@@ -18,6 +18,6 @@ endif
 include ../Makefile.inc
 
 # define all programs
-PROGRAMS = gettingstarted acknowledgementPayloads manualAcknowledgements streamingData multiceiverDemo interruptConfigure
+PROGRAMS = gettingstarted rangeTesting
 
 include Makefile.examples
