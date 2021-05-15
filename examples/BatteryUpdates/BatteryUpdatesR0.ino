@@ -2,10 +2,12 @@
  * See documentation at https://nRF24.github.io/RF24
  * See License information at root directory of this library
  * Author: Brendan Doherty (2bndy5)
+ * Revised by: Kellie Cobb (kelliecobb)
  */
 
 /**
- * Rev0 of battery updates: send one float battery value from Arduino transceiver
+ * Rev0 of battery updates: sample both battery voltages,
+ * and send one float battery value from Arduino transceiver
  * to Pi transceiver
  */
 #include <SPI.h>
@@ -93,7 +95,7 @@ void loop() {
       Serial.println(payload);                               // print payload sent
       // Sample both batteries, determine lowest battery, and transmit that voltage
       primBat = SamplePrimaryBattery();
-      secBat = SampleSecondaryBattery():
+      secBat = SampleSecondaryBattery();
 
       if (primBat <= secBat) {
         payload = primBat;
