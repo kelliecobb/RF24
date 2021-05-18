@@ -30,6 +30,7 @@ RF24 radio(22, 0);
 // See http://iotdk.intel.com/docs/master/mraa/ for more information on MRAA
 // See https://www.kernel.org/doc/Documentation/spi/spidev for more information on SPIDEV
 
+float payload = 0.0;
 void slave();   // prototype of the RX node's behavior
 void writeToCSV(float data); // prototype of the write to CSV
 
