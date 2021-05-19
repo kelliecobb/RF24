@@ -32,7 +32,7 @@ RF24 radio(22, 0);
 
 float payload = 0.0;
 void slave();   // prototype of the RX node's behavior
-void writeToCSV(float data); // prototype of the write to CSV
+//void writeToCSV(float data); // prototype of the write to CSV
 
 // custom defined timer for evaluating transmission time in microseconds
 struct timespec startTimer, endTimer;
@@ -57,6 +57,10 @@ int main(int argc, char** argv) {
     uint8_t address[2][6] = {"1Node", "2Node"};
     // It is very helpful to think of an address as a path instead of as
     // an identifying device destination
+
+    // save on transmission time by setting the radio to only transmit the
+    // number of bytes we need to transmit a float
+    radio.setPayloadSize(sizeof(payload)); // float datatype occupies 4 bytes
 
     // Set the PA Level low to try preventing power supply related problems
     // because these examples are likely run with nodes in close proximity to
@@ -92,15 +96,15 @@ void slave() {
             uint8_t bytes = radio.getPayloadSize();          // get the size of the payload
             radio.read(&payload, bytes);                     // fetch payload from FIFO
             // get current time
-            time_t curr_time;
-            curr_time = time(NULL);
-            tm *tm_local = localtime(&curr_time);
-            cout << "At local time : " << tm_local->tm_hour << ":" << tm_local->tm_min << ":" << tm_local->tm_sec << ",";
+            // time_t curr_time;
+            // curr_time = time(NULL);
+            // tm *tm_local = localtime(&curr_time);
+            // cout << "At local time : " << tm_local->tm_hour << ":" << tm_local->tm_min << ":" << tm_local->tm_sec << ",";
 
       //      cout << "received " << (unsigned int)bytes;      // print the size of the payload
       //      cout << " bytes on pipe " << (unsigned int)pipe; // print the pipe number
             cout << " lowest battery voltage is: " << payload << endl;                 // print the payload's value
-            writeToCSV(payload);                             // write the payload to writeToCSV
+        //    writeToCSV(payload);                             // write the payload to writeToCSV
         //  checkforUpload();                                // check if application has requested upload - if so, upload latest value?
         startTimer = time(nullptr);                      // reset timer
         }
@@ -108,11 +112,11 @@ void slave() {
     cout << "Nothing received in 6 seconds. Initiating retry." << endl;
 }
 
-void writeToCSV(float data) {
-  // open csv file
-  // write data to csv file
-  // close csv file
-}
+// void writeToCSV(float data) {
+//   // open csv file
+//   // write data to csv file
+//   // close csv file
+// }
 
 /**
  * Calculate the ellapsed time in microseconds
