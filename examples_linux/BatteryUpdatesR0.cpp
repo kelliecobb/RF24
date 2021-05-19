@@ -124,7 +124,6 @@ void slave() {
         //  checkforUpload();                                // check if application has requested upload - if so, upload latest value?
   //       startTimer = time(nullptr);                      // reset timer
         }
-    }
     // cout << "Nothing received in 6 seconds. Initiating retry." << endl;
 }
 
