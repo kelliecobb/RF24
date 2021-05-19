@@ -95,11 +95,11 @@ void slave() {
         if (radio.available(&pipe)) {                        // is there a payload? get the pipe number that recieved it
             uint8_t bytes = radio.getPayloadSize();          // get the size of the payload
             radio.read(&payload, bytes);                     // fetch payload from FIFO
-            // get current time
-            // time_t curr_time;
-            // curr_time = time(NULL);
-            // tm *tm_local = localtime(&curr_time);
-            // cout << "At local time : " << tm_local->tm_hour << ":" << tm_local->tm_min << ":" << tm_local->tm_sec << ",";
+            get current time
+            time_t curr_time;
+            curr_time = time(NULL);
+            tm *tm_local = localtime(&curr_time);
+            cout << "At local time : " << tm_local->tm_hour << ":" << tm_local->tm_min << ":" << tm_local->tm_sec << ",";
 
       //      cout << "received " << (unsigned int)bytes;      // print the size of the payload
       //      cout << " bytes on pipe " << (unsigned int)pipe; // print the pipe number
