@@ -65,7 +65,23 @@ int main(int argc, char** argv) {
     // Set the PA Level low to try preventing power supply related problems
     // because these examples are likely run with nodes in close proximity to
     // each other.
-    radio.setPALevel(RF24_PA_LOW); // RF24_PA_MAX is default.
+    int PAlevel = 0;
+    cout << "Enter desired PA level:" << endl;
+    cout << "0 = MIN" << endl << "1 = LOW" << endl;
+    cout << "2 = HIGH" << endl << "3 = MAX" << endl;
+    cin >> PAlevel;
+    if (PAlevel == 0) {
+      radio.setPALevel(RF24_PA_MIN);
+    }
+    else if (PAlevel == 1) {
+      radio.setPALevel(RF24_PA_LOW);
+    }
+    else if (PAlevel == 2) {
+      radio.setPALevel(RF24_PA_HIGH);
+    }
+    else if (PAlevel == 3) {
+      radio.setPALevel(RF24_PA_MAX);
+    }
 
     // set the TX address of the RX node into the TX pipe
     radio.openWritingPipe(address[radioNumber]);     // always uses pipe 0
@@ -99,7 +115,7 @@ void slave() {
             time_t curr_time;
             curr_time = time(NULL);
             tm *tm_local = localtime(&curr_time);
-            cout << "At local time : " << tm_local->tm_hour << ":" << tm_local->tm_min << ":" << tm_local->tm_sec << ",";
+            cout << "At local time: " << tm_local->tm_hour << ":" << tm_local->tm_min << ":" << tm_local->tm_sec << ",";
 
       //      cout << "received " << (unsigned int)bytes;      // print the size of the payload
       //      cout << " bytes on pipe " << (unsigned int)pipe; // print the pipe number
