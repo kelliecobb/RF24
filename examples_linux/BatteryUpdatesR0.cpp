@@ -105,8 +105,8 @@ void slave() {
 
     radio.startListening();                                  // put radio in RX mode
 
-    time_t startTimer = time(nullptr);                       // start a timer
-    while (time(nullptr) - startTimer < 6) {                 // use 6 second timeout
+    // time_t startTimer = time(nullptr);                       // start a timer
+    // while (time(nullptr) - startTimer < 70) {                 // use 6 second timeout
         uint8_t pipe;
         if (radio.available(&pipe)) {                        // is there a payload? get the pipe number that recieved it
             uint8_t bytes = radio.getPayloadSize();          // get the size of the payload
@@ -122,10 +122,10 @@ void slave() {
             cout << " lowest battery voltage is: " << payload << endl;                 // print the payload's value
         //    writeToCSV(payload);                             // write the payload to writeToCSV
         //  checkforUpload();                                // check if application has requested upload - if so, upload latest value?
-        startTimer = time(nullptr);                      // reset timer
+  //       startTimer = time(nullptr);                      // reset timer
         }
     }
-    cout << "Nothing received in 6 seconds. Initiating retry." << endl;
+    // cout << "Nothing received in 6 seconds. Initiating retry." << endl;
 }
 
 // void writeToCSV(float data) {
