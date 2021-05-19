@@ -31,6 +31,7 @@ RF24 radio(22, 0);
 // See https://www.kernel.org/doc/Documentation/spi/spidev for more information on SPIDEV
 
 float payload = 0.0;
+bool loop = 1; // exit condition for infinite receiving loop
 void slave();   // prototype of the RX node's behavior
 //void writeToCSV(float data); // prototype of the write to CSV
 
@@ -94,7 +95,9 @@ int main(int argc, char** argv) {
     // radio.printPrettyDetails(); // (larger) function that prints human readable data
 
     // ready to execute program now
-    slave();
+    while (loop) {
+      slave();
+    }
     return 0;
 }
 
@@ -105,8 +108,8 @@ void slave() {
 
     radio.startListening();                                  // put radio in RX mode
 
-    // time_t startTimer = time(nullptr);                       // start a timer
-    // while (time(nullptr) - startTimer < 70) {                 // use 6 second timeout
+    time_t startTimer = time(nullptr);                       // start a timer
+    while (time(nullptr) - startTimer < 120) {               // use a 2 minute timeout
         uint8_t pipe;
         if (radio.available(&pipe)) {                        // is there a payload? get the pipe number that recieved it
             uint8_t bytes = radio.getPayloadSize();          // get the size of the payload
@@ -122,9 +125,10 @@ void slave() {
             cout << " lowest battery voltage is: " << payload << endl;                 // print the payload's value
         //    writeToCSV(payload);                             // write the payload to writeToCSV
         //  checkforUpload();                                // check if application has requested upload - if so, upload latest value?
-  //       startTimer = time(nullptr);                      // reset timer
+        startTimer = time(nullptr);                      // reset timer
         }
-    // cout << "Nothing received in 6 seconds. Initiating retry." << endl;
+      }
+    cout << "Nothing rececived after 2 minutes, still listening." << endl;
 }
 
 // void writeToCSV(float data) {
