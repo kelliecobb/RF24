@@ -86,8 +86,8 @@ int main(int argc, char** argv) {
     radio.openReadingPipe(1, address[!radioNumber]); // using pipe 1
 
     // For debugging info
-    // radio.printDetails();       // (smaller) function that prints raw register values
-    // radio.printPrettyDetails(); // (larger) function that prints human readable data
+    radio.printDetails();       // (smaller) function that prints raw register values
+    radio.printPrettyDetails(); // (larger) function that prints human readable data
 
     // ready to execute program now
     setRole(); // calls master() or slave() based on user input

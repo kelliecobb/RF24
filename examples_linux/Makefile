@@ -18,6 +18,6 @@ endif
 include ../Makefile.inc
 
 # define all programs
-PROGRAMS = gettingstarted rangeTesting
+PROGRAMS = BatteryUpdatesR1
 
 include Makefile.examples
