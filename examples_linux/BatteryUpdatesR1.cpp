@@ -135,16 +135,12 @@ void overwrite(float voltage) {
     if (voltage > 7.5) {
         percent = (voltage - 7.5) / 5.1 * 100;
     }
-    cout << "Test before" << endl;
     
     std::ofstream ofs("BatteryUpdates.txt", std::ofstream::trunc);
 
     ofs << tm_local->tm_hour << ":" << tm_local->tm_min << ":" << tm_local->tm_sec << ", " << voltage << ", " << percent;
 
     ofs.close();
-    
-    cout << tm_local->tm_hour << ":" << tm_local->tm_min << ":" << tm_local->tm_sec << ", " << voltage << ", " << percent; // for debugging
-    cout << "test after" << endl;
 }
 
 /**
