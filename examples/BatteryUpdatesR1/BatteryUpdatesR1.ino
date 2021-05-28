@@ -27,10 +27,6 @@ uint8_t address[][6] = {"1Node", "2Node"};
 bool radioNumber = 1; // 0 uses address[0] to transmit, 1 uses address[1] to transmit
 
 float payload = 0.0; // payload stores battery voltage to be transmitted
-float primBat = 0.0;
-float secBat = 0.0;
-float lowestBat = 0.0;
-
 int count = 0; // counter for counting 1s interrupts up to 60s
 
 void setup() {
@@ -99,11 +95,18 @@ void setup() {
 ISR(TIMER1_COMPA_vect){
   count++;
   if (count == 58) { // 1 minute has passed
-    // This device is a TX node
+     // This device is a TX node
+     // Sample both batteries, determine lowest battery, and transmit that voltage
 
-    // Sample both batteries, determine lowest battery, and transmit that voltage
-    primBat = SamplePrimaryBattery();
-    secBat = SampleSecondaryBattery();
+     // SAMPLE PRIMARY BATTERY
+     int sensorValue1 = analogRead(A1);              // Read the input on analog pin for J2 (primary battery - BOARD_PWR)
+     float primBat = sensorValue1 * (5.0 / 1023.0);  // Convert the analog reading (which goes from 0 - 1023) to a voltage (0 - 3.15)
+     primBat = primBat / (10/40.1);                  // Convert to actual battery voltage
+
+     // SAMPLE SECONDARY BATTERY
+     int sensorValue0 = analogRead(A0);                // Read the input on analog pin for J1 (secondary battery)
+     float secBat = sensorValue0 * (5.0 / 1023.0);   // Convert the analog reading (which goes from 0 - 1023) to a voltage (0 - 3.15)
+     secBat = secBat / (10/40.1);                  // Convert to actual battery voltage
 
     if (primBat <= secBat) {
       payload = primBat;
@@ -112,7 +115,7 @@ ISR(TIMER1_COMPA_vect){
       payload = secBat;
     }
 
-    // Transmit battery voltage
+    // TRANSMIT LOWEST BATTERY VOLTAGE
     unsigned long start_timer = micros();                    // start the timer
     bool report = radio.write(&payload, sizeof(float));      // transmit & save the report
     unsigned long end_timer = micros();                      // end the timer
@@ -129,57 +132,9 @@ ISR(TIMER1_COMPA_vect){
       // FIXME: ERROR HANDLING?
     }
     count = 0;
+  }
 }
 
 void loop() {
   // Do nothing while waiting for 1min to pass
 } // loop
-
-/*******************************************************************************/
-// Function: SAMPLE PRIMARY BATTERY
-// Parameters: none
-// Returns: float voltage1 (represents actual primary battery voltage)
-// Error handling: nothing for now (FIXME: include range of appropriate values, error otherwise? keep sampling until in range)
-float SamplePrimaryBattery() {
-      // DEBUGGING: Serial.println("Sampling A1 for J2...");
-   // read the input on analog pin for J2 (primary battery - BOARD_PWR):
-   int sensorValue1 = analogRead(A1);
-      // DEBUGGING: Serial.print("ADC value is: ");
-      // DEBUGGING: Serial.println((int)sensorValue1);
-
-   // Convert the analog reading (which goes from 0 - 1023) to a voltage (0 - 3.15):
-   float voltage1 = sensorValue1 * (5.0 / 1023.0);
-      // DEBUGGING: Serial.print("J2 divided primary battery voltage is: ");
-      // DEBUGGING: Serial.println((float)voltage1);
-
-   //Convert to actual battery voltage
-   voltage1 = voltage1 / (10/40.1);
-      // DEBUGGING: Serial.print("J2 primary battery voltage is: ");
-      // DEBUGGING: Serial.println((float)voltage1);
-      // DEBUGGING: Serial.println();
-   return voltage1;
-}
-
-// Function: SAMPLE SECONDARY BATTERY
-// Parameters: none
-// Returns: float voltage0 (represents actual secondary battery voltage)
-// Error handling: nothing for now (FIXME: include range of appropriate values, error otherwise? keep sampling until in range)
-float SampleSecondaryBattery() {
-      // DEBUGGING: Serial.println("Sampling A0 for J1...");
-   // read the input on analog pin for J1 (secondary battery):
-   int sensorValue0 = analogRead(A0);
-      // DEBUGGING: Serial.print("ADC value is: ");
-      // DEBUGGING: Serial.println((int)sensorValue0);
-
-   // Convert the analog reading (which goes from 0 - 1023) to a voltage (0 - 3.15):
-   float voltage0 = sensorValue0 * (5.0 / 1023.0);
-      // DEBUGGING: Serial.print("J1 divided secondary battery voltage is: ");
-      // DEBUGGING: Serial.println((float)voltage0);
-
-   //Convert to actual battery voltage
-   voltage0 = voltage0 / (10/40.1);
-      // DEBUGGING: Serial.print("J1 secondary battery voltage is: ");
-      // DEBUGGING: Serial.println((float)voltage0);
-      // DEBUGGING: Serial.println();
-   return voltage0;
-}
